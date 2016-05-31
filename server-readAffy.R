@@ -1,1 +1,0 @@
-GSEgRNA <- ReadAffy()
