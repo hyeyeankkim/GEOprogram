@@ -2,9 +2,9 @@
 Our platform support gene expresion analysis for biologist who ..
 
 # Adventage of Our analysis system
-
-# 
-
+1. Support GEO supplyment file (CEL)
+2. Support User own raw file analysis
+3. Support Advenced analysis (network analysis, pathway analysis, drug recommendation) 
 
 # Contributors
 Main contributors: Jin-Muk Lim, Hyeyeon Kim, Young-Ju Lee
