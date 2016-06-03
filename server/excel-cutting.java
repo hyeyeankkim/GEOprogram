@@ -20,7 +20,10 @@ public class text {
 			//BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file)));
 			StringBuffer sb = new StringBuffer("!series_matrix_table_begin");
 		    int position = sb.indexOf("!series_matrix_table_begin");
-		
+		    int endposition = sb.indexOf("!series_matrix_table_end");
+		    
+		    Substring(position,endposition); //아직 제대로 작동하지않음
+		    
 			//1. 삭제하고자 하는 position 이전까지는 이동하며 dummy에 저장
 			String line;
 			for(int i=0; i<position ; i++) {
@@ -48,5 +51,8 @@ public class text {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
 	}
+	public static void Substring(int position, int endposition) {
+		// TODO Auto-generated method stub
 }
