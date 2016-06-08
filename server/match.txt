@@ -1,0 +1,46 @@
+## Load required packages ##
+library(GEOquery)
+library(reshape2)
+library(survival)
+library(ggplot2)
+library(GGally)
+
+## Download data from GEO ##
+GSE = "GSE31210"
+GPL = "GPL570"
+ 
+data.series = getGEO(GEO = GSE, AnnotGPL = FALSE, getGPL = FALSE)
+data.platform = getGEO(GPL)
+data.index = match(GPL, sapply(data.series, annotation))
+data.p = pData(data.series[[data.index]])
+
+data.expr = exprs(data.series[[data.index]])
+common = intersect(colnames(data.expr), rownames(data.p))
+m1 = match(common, colnames(data.expr))
+m2 = match(common, rownames(data.p))
+data.expr = data.expr[,m1]
+data.p = data.p[m2,]
+data.expr[which(data.expr <= 0)] <- NaN
+data.expr = log2(data.expr)
+
+## generate boxplot of expression profiles ##
+title = "samples" 
+s.num = 1:ncol(data.expr)
+n = ncol(data.expr)
+if (n > 30) {
+  s.num = sample(1:n, 30)
+  title = "selected samples"
+}
+title = paste0(GSE, "/", GPL, " ", title)
+
+fixed.df <- as.data.frame(x=data.expr[,s.num], stringsAsFactors = FALSE)
+
+x1 <- reshape2::melt(fixed.df, na.rm = TRUE, id.vars = NULL,
+         variable.name = "variable", value.name = "value")
+
+exp.prof.plot <- ggplot(x1, aes(variable, value)) +
+                geom_boxplot(outlier.colour = "green") +
+                labs(title = title, y = "log2 expression", x = "") +
+                theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+print(exp.prof.plot)
