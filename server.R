@@ -8,17 +8,19 @@ shinyServer(function(input,output){
 	  }
 	
 	downloadRawGEO <- function(){
-	  GSE<- getGEOSuppFiles(input$number)
-	  # root setting
-	  setwd("/home/hy/R/bioexample/")
-	  #data<-get(input$number)
-	  class(input$number)
-	  #print(input$number)
-	  #inputFile <- data
-	  #outputFile = paste(normalizePath(dirname(".")),"\\", inputFile, sep = "")
-	  untar(list.files()[2])
-	  GSEgRNA <- ReadAffy()
-	  #source("server/server-readAffy.R",local=TRUE)
+	 GSE <- input$number
+
+	  if(!file.exists(GSE)){
+	    getGEOSuppFiles(GSE)
+	    # root setting
+	    setwd("/home/hy/R/bioexample/")
+	    COMPRESSED_CELS_DIRECTORY <- GSE 
+	    untar( paste( GSE , paste( GSE , "RAW.tar" , sep="_") , sep="/" ), exdir=COMPRESSED_CELS_DIRECTORY) 
+	    cels <- list.files( COMPRESSED_CELS_DIRECTORY , pattern = "[gz]") 
+	    sapply( paste( COMPRESSED_CELS_DIRECTORY , cels, sep="/") , gunzip ) 
+	  }
+	 
+	  GSEgRNA <- ReadAffy( celfile.path = GSE )
 	  GSEgRNA <- rma(GSEgRNA)
 	  GSEgRNA <- exprs(GSEgRNA)
 	  GSEgRNA <- GSEgRNA[complete.cases(GSEgRNA),]
