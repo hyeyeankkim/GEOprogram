@@ -30,13 +30,11 @@ shinyServer(function(input,output){
 	  #print(GSEgRNA)
 	  GSEgRNA <- GSEgRNA[complete.cases(GSEgRNA),]
 	  return(GSEgRNA)
-	  
+	  }
+  
 	  output$summary<-renderTable({
 	    source("server/server-summary.R",local=TRUE)
 	  })
-	  
-	  
-	  }
 
 	output$downloadData <- downloadHandler(
 	filename = function() {paste(input$dataset, '.csv',sep='')},
