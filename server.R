@@ -8,9 +8,9 @@ shinyServer(function(input,output){
 	  }
 	
 	downloadRawGEO <- function(){
-	 GSE <- input$number
 
-	  if(!file.exists(GSE)){
+	  GSE <- input$number
+	 if(!file.exists(GSE)){
 	    getGEOSuppFiles(GSE)
 	    # root setting
 	    setwd("/home/hy/R/bioexample/")
@@ -20,22 +20,32 @@ shinyServer(function(input,output){
 	    sapply( paste( COMPRESSED_CELS_DIRECTORY , cels, sep="/") , gunzip ) 
 	  }
 	 
-	  GSEgRNA <- ReadAffy( celfile.path = GSE )
-	  GSEgRNA <- rma(GSEgRNA)
+	  GSEgRNA <- ReadAffy( celfile.path = GSE ) 
+	  if(input$selectGroup=='RMA'){
+	    GSEgRNA <- rma(GSEgRNA)}
+	  if(input$selectGroup=='MAS5'){
+	   GSEgRNA <- mas5(GSEgRNA)}
+	  #need
 	  GSEgRNA <- exprs(GSEgRNA)
+	  #print(GSEgRNA)
 	  GSEgRNA <- GSEgRNA[complete.cases(GSEgRNA),]
 	  return(GSEgRNA)
+	  
+	  output$summary<-renderTable({
+	    source("server/server-summary.R",local=TRUE)
+	  })
+	  
+	  
 	  }
 
 	output$downloadData <- downloadHandler(
 	filename = function() {paste(input$dataset, '.csv',sep='')},
-	content = function(file1){cannot coerce type 'closure' to vector of type 'character'
+	content = function(file1){
 	write.csv(datasetInput(),file1)
 	}
 	)
 	
-  source("server/server-renderTable.R",local=TRUE)
+        source("server/server-renderTable.R",local=TRUE)
 	source("server/server-renderPlot.R",local=TRUE)
-	
- 
+
 	})
