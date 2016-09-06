@@ -12,13 +12,12 @@ observe({
   if(input$Gobutton==0){return()}
   else{
     if(input$checkGroup=='Series matrix file'){
-      GSEmRNA <- downloadSeriesGEO()
-      p = GSEmRNA
+      #GSEmRNA <- downloadSeriesGEO()
+      #p = GSEmRNA
       #boxplot(GSEmRNA)
-      GPL = "GPL570"
-      annotation(GSEmRNA)
-      #data.series <- getGEO(GSE, AnnotGPL = FALSE, getGPL = FALSE,GSEMatrix = TRUE) 
-      data.series = GSE
+      #GPL = "GPL570"
+      data.series <- getGEO(input$number, AnnotGPL = FALSE, getGPL = FALSE,GSEMatrix = TRUE) 
+      #data.series = GSE
       data.platform = getGEO(GPL) 
       data.index = match(GPL, sapply(data.series, annotation)) 
       data.p = pData(data.series[[data.index]])       
