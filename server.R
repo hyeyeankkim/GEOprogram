@@ -1,14 +1,15 @@
-
-shinyServer(function(input,output){
-
-	downloadSeriesGEO<-function(){
-	  GSE <- getGEO(input$number,GSEMatrix = TRUE)
+ shinyServer(function(input,output){
+   observe(
+   if(input$Gobutton==0){return()}
+   
+   else{
+	 downloadSeriesGEO<-function(){
+	  GSE <- getGEO(input$number,GSEMatrix = TRUE, AnnotGPL = FALSE, getGPL = FALSE)
 	  GSEmRNA <- exprs(GSE[[1]])[complete.cases(exprs(GSE[[1]])),]
 	  return(GSEmRNA)
 	  }
 	
 	downloadRawGEO <- function(){
-
 	  GSE <- input$number
 	 if(!file.exists(GSE)){
 	    getGEOSuppFiles(GSE)
@@ -22,28 +23,30 @@ shinyServer(function(input,output){
 	 
 	  GSEgRNA <- ReadAffy( celfile.path = GSE ) 
 	  if(input$selectGroup=='RMA'){
-	    GSEgRNA <- rma(GSEgRNA)}
+	    GSEgRNA <- rma(GSEgRNA)
+	    #print(GSEgRNA)
+	    #print("aa")
+	    }
+	  
+	  
 	  if(input$selectGroup=='MAS5'){
-	   GSEgRNA <- mas5(GSEgRNA)}
+	   GSEgRNA <- mas5(GSEgRNA)  }
 	  #need
-	  GSEgRNA <- exprs(GSEgRNA)
 	  #print(GSEgRNA)
+	  GSEgRNA <- exprs(GSEgRNA)
+	  print(GSEgRNA)
 	  GSEgRNA <- GSEgRNA[complete.cases(GSEgRNA),]
+	  
 	  return(GSEgRNA)
 	  }
-  
-	  output$summary<-renderTable({
-	    source("server/server-summary.R",local=TRUE)
-	  })
 
-	output$downloadData <- downloadHandler(
-	filename = function() {paste(input$dataset, '.csv',sep='')},
-	content = function(file1){
-	write.csv(datasetInput(),file1)
-	}
-	)
 	
-        source("server/server-renderTable.R",local=TRUE)
+
+  source("server/server-renderTable.R",local=TRUE)
+#	source("server/server-summary.R",local=TRUE)
+#	source("server/cSpilt.R",local=TRUE)
 	source("server/server-renderPlot.R",local=TRUE)
 
+   }
+   )
 	})
